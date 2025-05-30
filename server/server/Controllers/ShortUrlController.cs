@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Data;
 using server.Models;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace server.Controllers
 {
@@ -338,13 +339,13 @@ namespace server.Controllers
 					{
 						ErrorCode = "INVALID_IDS",
 						ErrorMessage = "Danh sách ID không được để trống."
-					});
-				}
+                    });
+                }
+				var temp = string.Join(",", ids);
+				var lstTemp = _context.ShortUrls.FromSqlRaw($"SELECT * FROM [ShortURL.Links] WHERE ShortId IN ({temp})");
 
-				var temp = ids;
-				var lstTemp = _context.ShortUrls.Where(p => temp.Contains(p.ShortId)).ToList();
 
-				var deletedIds = new List<int>();
+                var deletedIds = new List<int>();
 
 				foreach (var item in ids)
 				{
